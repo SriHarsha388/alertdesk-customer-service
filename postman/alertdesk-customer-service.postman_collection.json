@@ -1,0 +1,117 @@
+{
+  "info": {
+    "_postman_id": "a3b4dce4-8d4a-4f42-bd91-2b3f7d5b9d11",
+    "name": "AlertDesk Customer Service",
+    "description": "Postman collection for the AlertDesk Customer Profile Service running on port 8083.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Customer Profile",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/customers/{{customerId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "{{customerId}}"
+          ]
+        },
+        "description": "Returns the full customer profile including risk rating, PEP flag, sanctions match, KYC status, and account numbers."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Customer Alerts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/customers/{{customerId}}/alerts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "{{customerId}}",
+            "alerts"
+          ]
+        },
+        "description": "Returns historical alerts for the selected customer ordered newest first."
+      },
+      "response": []
+    },
+    {
+      "name": "Search Customers",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/customers/search?query={{searchQuery}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "query",
+              "value": "{{searchQuery}}"
+            }
+          ]
+        },
+        "description": "Searches customers by full name or account number. Query must be at least 3 characters."
+      },
+      "response": []
+    },
+    {
+      "name": "Search Customers - Invalid Query",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/customers/search?query=ab",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "query",
+              "value": "ab"
+            }
+          ]
+        },
+        "description": "Example negative test showing the validation error response when the query is shorter than 3 characters."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8083"
+    },
+    {
+      "key": "customerId",
+      "value": "CUST-1042"
+    },
+    {
+      "key": "searchQuery",
+      "value": "mar"
+    }
+  ]
+}
