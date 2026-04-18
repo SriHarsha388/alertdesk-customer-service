@@ -48,6 +48,17 @@ class CustomerControllerTest {
     void shouldRejectShortSearchQuery() throws Exception {
         mockMvc.perform(get("/api/customers/search").param("query", "ab"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Search query must be at least 3 characters"));
+                .andExpect(jsonPath("$.error").value("Validation failed"))
+                .andExpect(jsonPath("$.violations[0].field").value("query"))
+                .andExpect(jsonPath("$.violations[0].message").exists());
+    }
+
+    @Test
+    void shouldReturnNotFoundInSharedErrorShape() throws Exception {
+        mockMvc.perform(get("/api/customers/UNKNOWN"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Customer not found: UNKNOWN"))
+                .andExpect(jsonPath("$.violations").isArray());
     }
 }

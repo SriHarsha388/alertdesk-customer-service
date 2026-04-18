@@ -3,6 +3,8 @@ package com.alertdesk.customer.service;
 import com.alertdesk.customer.api.CustomerAlertResponse;
 import com.alertdesk.customer.api.CustomerProfileResponse;
 import com.alertdesk.customer.api.CustomerSearchResponse;
+import com.alertdesk.customer.common.exception.GlobalExceptionHandler.BusinessRuleException;
+import com.alertdesk.customer.common.exception.GlobalExceptionHandler.ResourceNotFoundException;
 import com.alertdesk.customer.model.Customer;
 import com.alertdesk.customer.model.CustomerAlert;
 import com.alertdesk.customer.repository.CustomerAlertRepository;
@@ -24,13 +26,13 @@ public class CustomerService {
 
     public CustomerProfileResponse getCustomerProfile(String customerId) {
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(customerId));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found: " + customerId));
         return mapProfile(customer);
     }
 
     public List<CustomerAlertResponse> getCustomerAlerts(String customerId) {
         if (!customerRepository.existsById(customerId)) {
-            throw new CustomerNotFoundException(customerId);
+            throw new ResourceNotFoundException("Customer not found: " + customerId);
         }
         return customerAlertRepository.findByCustomerCustomerIdOrderByCreatedAtDesc(customerId)
                 .stream()
@@ -41,7 +43,7 @@ public class CustomerService {
     public List<CustomerSearchResponse> searchCustomers(String query) {
         String normalizedQuery = query == null ? "" : query.trim();
         if (normalizedQuery.length() < 3) {
-            throw new InvalidSearchQueryException();
+            throw new BusinessRuleException("Search query must be at least 3 characters");
         }
         return customerRepository.searchByNameOrAccountNumber(normalizedQuery)
                 .stream()
